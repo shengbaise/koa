@@ -75,7 +75,7 @@ process.nextTick(() => {
     //     console.info('[阶段3.immediate] immediate 回调2')
     //     console.info('---------99999----------')
     // })
-}) 
+})
 process.nextTick(() => {
     console.info('[...待切入下一阶段] nextTick 回调3')
     console.info('---------3----------')

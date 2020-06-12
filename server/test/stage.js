@@ -61,11 +61,12 @@ Promise.resolve().then(() => {
 })
 
 // 执行process.nextTick第一次回调
-// promse的第一次回调
-// 执行process.nextTick第二次回调
 // 执行事件A啊
+// 执行process.nextTick第二次回调
+// promse的第一次回调
 // promse的第二次回调
-// 执行setImmediate
 // 执行0毫秒后的set time out
 // 执行1000毫秒后的set time out
 // 执行2000毫秒后的set time out
+// 执行setImmediate
+

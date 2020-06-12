@@ -1,12 +1,14 @@
 const Koa = require('koa')
 const session = require('koa-session')
 const logger = require('koa-logger')
+const router = require('./routes')
 const app = new Koa()
 
 app.keys = ['hi yishuo']
 
 app.use(logger())
 app.use(session(app))
+app.use(router.routes()).use(router.allowedMethods())
 
 app.use(async (ctx, next) => {
   if (ctx.path === '/') {
