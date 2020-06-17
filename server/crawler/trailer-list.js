@@ -27,6 +27,7 @@ const sleep = time => new Promise((resolve) => {
     const $ = window.$
     const items = $('.list-wp .item')
     const links = []
+    console.info(items, 'itemsgggg')
     if (items.length > 0) {
       items.each((index, item) => {
         const it = $(item)

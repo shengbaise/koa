@@ -16,6 +16,7 @@
     "koa-logger": "^3.2.1",
     "koa-router": "^9.0.1",
     "koa-session": "^6.0.0",
+    "mongoose": "^5.9.19",
     "puppeteer": "^3.3.0",
     "request": "^2.88.2",
     "request-promise-native": "^1.0.8"
