@@ -1,24 +1,11 @@
-const fs = require('fs');
-const path = require('path');
-const MongoClient = require('mongodb').MongoClient; 
 const puppeteer = require('puppeteer')
-const url = 'https://www.ecook.cn/caipu/fenlei7136465/?page=1'
-
-const config = {
-  mongoDB: {
-    database: 'menu',
-    username: 'root',
-    password: 'root',
-    host: '127.0.0.1',
-    port: 27017
-  }
-}
-
+const url = 'https://www.ecook.cn/caipu/fenlei7136465'
+const insertData = require('../db/index')
 const sleep = time => new Promise((resolve) => {
   setTimeout(resolve, time)
 })
 
-;(async () => {
+const getPageData = async (current) => {
   console.info('开始执行')
   const browser = await puppeteer.launch({
     args: ['--no-sandbox'],
@@ -28,17 +15,13 @@ const sleep = time => new Promise((resolve) => {
   })
 
   const page = await browser.newPage() // 打开一个新的页面
-  await page.goto(url, {
+  await page.goto(url+ `/?page=${current}`, {
     waitUntil: 'networkidle2',
-    timeout: 60*1000
+    timeout: 6000*1000
   }) // 页面加载完成
   // await sleep(3000)
   await page.waitForSelector('.pagetion') // 直到页面出现.more class
 
-  // for (let i = 0; i < 1; i++) {
-  //   await sleep(3000)
-  //   await page.click('.more')
-  // }
   const result = await page.evaluate(() => {
     console.info(2323)
     const $ = window.$
@@ -64,20 +47,16 @@ const sleep = time => new Promise((resolve) => {
     }
     return links
   })
+  datas.push(...result)
   browser.close()
-  console.info(result, 'result....')
+  insertData(result)
+  console.info(result.length, 'result....', datas)
   console.info('执行结束')
-
-  let mongoUrl = "mongodb://" + config.mongoDB.host + ":" + config.mongoDB.port + "/" + config.mongoDB.database;
-  MongoClient.connect(mongoUrl,{ useNewUrlParser: true }, function(err, db) {
-    if (err) {
-      console.info(err)
-      return
-    }
-    console.info(db.receiptList, db.collection("receiptList").insert(result))
-    db.receiptList.insert(result)
-  })
-  
-  // process.send({result})
-  // process.exit(0)
+}
+const datas = []
+;(async() => {
+  for await (let i of [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]) {
+    getPageData(i)
+  }
+  console.info(datas, '结束了')
 })()
