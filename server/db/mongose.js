@@ -46,4 +46,10 @@ const findData = async(current, size) => {
   return res
 }
 
-module.exports = {findData}
+const updateData = async(origin, data) => {
+  const res = await ReceiptList.update(origin, { $set: data })
+  // console.info(res, 'gggg')
+  return res
+}
+
+module.exports = {findData, updateData}

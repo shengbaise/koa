@@ -1,7 +1,6 @@
 const puppeteer = require('puppeteer')
 const url = 'https://www.ecook.cn/caipu/'
-const {insertData, find} = require('../db/index')
-const {findData} = require('../db/mongose')
+const {findData, updateData} = require('../db/mongose')
 const sleep = time => new Promise((resolve) => {
   setTimeout(resolve, time)
 })
