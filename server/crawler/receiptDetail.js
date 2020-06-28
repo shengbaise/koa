@@ -1,6 +1,7 @@
 const puppeteer = require('puppeteer')
 const url = 'https://www.ecook.cn/caipu/'
 const {findData, updateData} = require('../db/mongose')
+const {limit} = require('../db/data')
 const sleep = time => new Promise((resolve) => {
   setTimeout(resolve, time)
 })
@@ -28,8 +29,13 @@ const getPageData = async (page, receiptId) => {
     console.info(2323)
     const $ = window.$
     const item = $('.all_article')
+    const menuWatchs = $(item).find('.Menu_introduction .menus_btn .menu_show .menu_watch')
     // 标题
     const title = $(item).find('.cont #recipeName').text()
+    // 浏览量
+    const watchNum = $(menuWatchs[0]).text()
+    // 收藏
+    const collectNum = $(menuWatchs[1]).text()
     // 图片
     const imgUrl = $(item).find('.main_img img').attr('src')
     // 材料
@@ -49,25 +55,30 @@ const getPageData = async (page, receiptId) => {
     stepDoms.each((index, item) => {
       const it = $(item)
       const detail  = it.find('.step_text .step_detail').text()
-      const title = it.find('.img').attr('title')
+      // const title = it.find('.img').attr('title')
       const stepImg = it.find('.img .step_img').attr('src')
       steps.push({detail, title, stepImg})
     })
-    return {title, materials, steps}
+    return {materials, steps, watchNum, collectNum}
   })
   // browser.close()
-  // insertData(result, 'receiptDetail')
-  console.info('执行结束', Object.assign(result, {
-    receiptId: receiptId
-  }))
+  console.info(result, 'result', receiptId)
+  updateData({id: receiptId}, result)
+  // console.info('执行结束', Object.assign(result, {
+  //   receiptId: receiptId
+  // }))
 }
 
 ;(async() => {
-  const res = await findData(1, 10)
+  const res = await findData(1, 2)
   const page = await openPage()
-  console.info(res, 'resssss')
-  for(let i of res) {
-    await getPageData(page, i.id)
+  console.info(res, 'resssss>>>>>>>>>>>>>')
+  const fn = async function (item) {
+    await getPageData(page, item.id)
+    console.info('执行fn')
   }
+  limit(res, fn, 2, (item) => {
+    console.info(item, 开始执行)
+  })
   console.info('结束了')
 })()

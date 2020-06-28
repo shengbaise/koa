@@ -42,14 +42,21 @@ const ReceiptList = mongo.model('receiptList', schema, 'receiptList');
 
 const findData = async(current, size) => {
   const res = await ReceiptList.find({}, {'id': 1, '_id': 0}).skip((current -1)*size).limit(size*1)
-  // console.info(res, 'gggg')
+  console.info(res, 'gggg')
   return res
 }
 
 const updateData = async(origin, data) => {
-  const res = await ReceiptList.update(origin, { $set: data })
-  // console.info(res, 'gggg')
-  return res
+  try {
+    console.info('hahahhahahah', origin, data)
+    const res = await ReceiptList.where({id: '262348435'}).update({'watchNum': 1})
+    console.info(res, 'hggggggggg')
+    // const res = await ReceiptList.update({},{$set: data}).exec()
+  } catch (error) {
+    console.info(error, 'error')
+  }
 }
 
 module.exports = {findData, updateData}
+
+updateData({id: '262348435'}, {watchNum: 0})
