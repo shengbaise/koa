@@ -2,7 +2,7 @@
 // 获取列表数据
 const puppeteer = require('puppeteer')
 const url = 'https://www.ecook.cn/caipu/'
-const insertData = require('../db/index')
+const { insetTypes } = require('../db/mongose')
 const sleep = time => new Promise((resolve) => {
   setTimeout(resolve, time)
 })
@@ -57,7 +57,7 @@ const getPageData = async (current) => {
   })
   // datas.push(...result)
   // browser.close()
-  // insertData(result)
+  insetTypes(result)
   // console.info(result.length, 'result....', datas)
   console.info('执行结束', result)
 }

@@ -61,6 +61,25 @@ const updateData = async(origin, data) => {
   }
 }
 
-module.exports = {findData, updateData}
+const typeSchema = new mongoose.Schema({
+  type: String,
+  firstName: String,
+  secondTypes: Array
+})
+
+const TypeList = mongo.model('typeList', typeSchema, 'typeList')
+
+const insetTypes = async (arr) => {
+  try {
+    console.info('hahahhahahah', arr)
+    const res = await TypeList.insertMany(arr)
+    console.info(res, 'hggggggggg')
+    // const res = await ReceiptList.update({},{$set: data}).exec()
+  } catch (error) {
+    console.info(error, 'error')
+  }
+}
+
+module.exports = {findData, updateData, insetTypes}
 
 // updateData({id: '262348435'}, {watchNum: 0})
