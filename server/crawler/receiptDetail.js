@@ -1,3 +1,4 @@
+// 获取详情页面数据
 const puppeteer = require('puppeteer')
 const url = 'https://www.ecook.cn/caipu/'
 const {findData, updateData} = require('../db/mongose')
@@ -33,9 +34,9 @@ const getPageData = async (page, receiptId) => {
     // 标题
     const title = $(item).find('.cont #recipeName').text()
     // 浏览量
-    const watchNum = $(menuWatchs[0]).text()
+    const watchNum = $(menuWatchs[0]).find('.menu_watch_num').text()
     // 收藏
-    const collectNum = $(menuWatchs[1]).text()
+    const collectNum = $(menuWatchs[1]).find('.menu_watch_num').text()
     // 图片
     const imgUrl = $(item).find('.main_img img').attr('src')
     // 材料
@@ -44,7 +45,7 @@ const getPageData = async (page, receiptId) => {
     materialDoms.each((index, item) => {
       const it = $(item)
       const materialDetails  = it.find('.material_subul li')
-      console.info(materialDetails.length, 'length')
+      console.info(materialDetails.length, 'length', materialDetails, $(materialDetails[0]).text())
       const name = $(materialDetails[0]).text()
       const count = $(materialDetails[1]).text()
       materials.push({count, name})
@@ -69,16 +70,53 @@ const getPageData = async (page, receiptId) => {
   // }))
 }
 
-;(async() => {
-  const res = await findData(1, 2)
-  const page = await openPage()
-  console.info(res, 'resssss>>>>>>>>>>>>>')
-  const fn = async function (item) {
-    await getPageData(page, item.id)
-    console.info('执行fn')
-  }
-  limit(res, fn, 2, (item) => {
-    console.info(item, 开始执行)
+const test = (i) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      console.info(i, 'hehehe')
+      resolve(i)
+    }, 100)
   })
+}
+
+const run = async (arr, limit, fn) => {
+  const browser = await puppeteer.launch({
+    args: ['--no-sandbox'],
+    dumpio: false,
+    devtools: true,
+    slowMo: 3000
+  })
+
+  const page = await browser.newPage() // 打开一个新的页面
+  const datas = arr.slice(0, limit)
+  arr.splice(0, limit)
+  for (const v of datas) {
+    try {
+      await fn(page, v.id)
+    } catch (error) {
+      console.info(error)
+      break
+    }
+  }
+  console.info('666666')
+  browser.close()
+  if (arr.length > 0) {
+    run(arr, limit, fn)
+  }
+}
+// ;(async() => {
+//   const arr = [2, 4, 4, 5, 65, 6, 62, 9, 8, 10, 3]
+//   await run(arr, 3, test)
+//   console.info('结束了')
+// })()
+
+;(async() => {
+  await sleep(1000)
+  const res = await findData(2, 160)
+  console.info(res, 'resssss>>>>>>>>>>>>>')
+  // for (const v of res) {
+  //   await getPageData(page, v.id)
+  // }
+  run(res, 3, getPageData)
   console.info('结束了')
 })()

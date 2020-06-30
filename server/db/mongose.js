@@ -36,7 +36,11 @@ const schema = new mongoose.Schema({
   title: String,
   desc: String,
   author: String,
-  type: Number
+  type: Number,
+  watchNum: Number,
+  materials: Array,
+  steps: Array,
+  collectNum: Number
 })
 const ReceiptList = mongo.model('receiptList', schema, 'receiptList');
 
@@ -49,7 +53,7 @@ const findData = async(current, size) => {
 const updateData = async(origin, data) => {
   try {
     console.info('hahahhahahah', origin, data)
-    const res = await ReceiptList.where({id: '262348435'}).update({'watchNum': 1})
+    const res = await ReceiptList.where(origin).update(data)
     console.info(res, 'hggggggggg')
     // const res = await ReceiptList.update({},{$set: data}).exec()
   } catch (error) {
@@ -59,4 +63,4 @@ const updateData = async(origin, data) => {
 
 module.exports = {findData, updateData}
 
-updateData({id: '262348435'}, {watchNum: 0})
+// updateData({id: '262348435'}, {watchNum: 0})

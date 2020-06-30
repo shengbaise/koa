@@ -1,3 +1,4 @@
+// 获取列表数据
 const puppeteer = require('puppeteer')
 const url = 'https://www.ecook.cn/caipu/fenlei7136465'
 const insertData = require('../db/index')
